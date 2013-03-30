@@ -18,5 +18,5 @@ petclinic_war_file
         file = petclinic.war
     wiring
         consumes_endpoints
-            mysql_service
+            mysql_master_slave_service
                 mysql_endpoint
