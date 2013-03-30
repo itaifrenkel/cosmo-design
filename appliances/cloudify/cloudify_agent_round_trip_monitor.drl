@@ -1,0 +1,51 @@
+global String frequency
+global String roundtrip
+global String lease
+
+rule "ping agent every period"
+
+   timer($frequency)
+   dialect "mvel"
+when
+   Agent($id : id)
+then
+   request = new PingRequest($id)
+   insert(request)
+   exitPoint[ "event_bus" ].insert(request)
+end
+
+rule "correlate ping responses with requests within roundtrip"
+    dialect "mvel"
+when
+   PingRequest($id : id, $challenge : challenge)
+   $response: PingResponse( id == $id, challange == $challange,
+                            this after[ 0m, $roundtrip] $request )
+then
+   modify($response) {
+       correlated = true
+   }
+end
+
+rule "machine is reachable if received a response in the lease period"
+when
+   Agent($id : id, $generation : generation, state == 'unreachable')
+   PingResponse( id == $id, generation == $generation, correlated == true
+                 over window:time($lease)
+then
+   modify($agent) {
+        state = 'reachable'
+   }
+end
+
+rule "machine is unreachable if not received any response in the lease period"
+
+when
+
+   Agent($id : id, $generation : generation, state == 'reachable')
+   not (PingResponse(id == $id, generation == $generation, correlated == true
+                     over window:time($lease))
+then
+   modify($agent) {
+        state = 'unreachable'
+   }
+end

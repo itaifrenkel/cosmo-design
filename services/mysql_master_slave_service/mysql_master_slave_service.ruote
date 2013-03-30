@@ -1,0 +1,24 @@
+define install_service
+    _install_mysql_service
+
+define _install_mysql_service
+    sequence
+        set to_f: appliance, value: ${mysql_appliance}
+        concurrent
+            sequence tag: master_started
+                start_volume snapshot: ${mysql_snapshot},
+                             availability_zone: ${availability_zones.0},
+                             to_f: attached_volume_zone1
+                             if: ${!attached_volume_zone1}
+                start_appliance availability_zone: ${availability_zones.0},
+                                attached_volume: ${attached_volume_zone1}
+                appliance exec: start_master
+            sequence
+                start_volume snapshot: ${mysql_snapshot},
+                                             availability_zone: ${availability_zones.0},
+                                             to_f: attached_volume_zone2
+                                             if: ${!attached_volume_zone2}
+                start_appliance availability_zone: ${availability_zones.1}
+                                attached_volume: ${attached_volume_zone2}
+                appliance exec: start_slave,
+                          await: master_started

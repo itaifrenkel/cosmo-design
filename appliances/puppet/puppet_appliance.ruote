@@ -1,0 +1,18 @@
+define _configure_user_data
+    _select_field
+         to_f: ${user_data},
+         from: ${vm_resources},
+         selector: config.puppet_template
+
+# selects a property from each item and places them in a new collection
+# input
+#    from - collection to iterate
+#    selector - the property to select from each item
+#    to_f - the field to place the result in
+# output
+#    ${to_f} the collection of the selected properties
+
+define _select_field
+    concurrence on: ${from}, to_v: ${item}, merge_type: stack, merge : highest
+       set to_f: ${to_f}, value: ${v:item.${selector}}
+
