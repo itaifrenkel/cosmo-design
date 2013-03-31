@@ -1,5 +1,0 @@
-define install_service
-    sequence
-        install_service service: ${ha_lb_java_web_service}
-        install_service service: ${mysql_master_slave_service}
-

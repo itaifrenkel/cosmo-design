@@ -1,5 +1,5 @@
 mysql_master_slave_service
-
+    alias = mysql
     config
         availability_zones
         mysql_snapshot
