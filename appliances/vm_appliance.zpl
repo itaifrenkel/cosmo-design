@@ -1,5 +1,5 @@
 vm_appliance
-   extends = appliance
+   type = appliance
    config
        virtual_machine
        security_groups

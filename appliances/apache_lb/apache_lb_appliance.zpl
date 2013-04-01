@@ -1,5 +1,5 @@
 apache_lb_appliance
-    extends = puppet_appliance
+    type = puppet_appliance
     config
         virtual_machine = apache_lb_vm
         vm_resources
@@ -17,7 +17,7 @@ apache_lb_appliance
        sync_web_servers
 
 apache_lb
-    extends = vm_resource
+    type = vm_resource
 
     config
         puppet_template = "apache_lb.pp"
@@ -31,13 +31,13 @@ apache_lb
         http_monitor
 
 apache_lb_http_endpoint
-   extends = endpoint
+   type = endpoint
    config
        port = 80
        protocol = http
 
 apache_lb_https_endpoint
-    extends = endpoint
+    type = endpoint
     config
         port = 443
         protocol = https

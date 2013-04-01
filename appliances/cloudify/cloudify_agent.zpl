@@ -1,5 +1,5 @@
 cloudify_agent
-    extends = vm_resource
+    type = vm_resource
     config
         monitor
            frequency = 5s

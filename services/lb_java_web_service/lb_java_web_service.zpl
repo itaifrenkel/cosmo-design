@@ -1,5 +1,5 @@
 lb_java_web_service
-    extends = service
+    type = service
     config
         number_of_web_appliances = 2
         number_of_load_balancer_appliances = 1

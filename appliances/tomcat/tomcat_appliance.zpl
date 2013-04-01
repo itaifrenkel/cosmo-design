@@ -1,5 +1,5 @@
 tomcat_appliance
-    extends = puppet_appliance
+    type = puppet_appliance
     config
         vm_resources
             cloudify_agent
@@ -16,7 +16,7 @@ tomcat_appliance
        restart_war
 
 tomcat
-    extends = vm_resource
+    type = vm_resource
     config
         puppet_template = tomcat.pp
         chef_recipe = tomcat
@@ -27,24 +27,24 @@ tomcat
         tomcat_http_monitor
 
 tomcat_resource
-    extends = resource
+    type = resource
     hosted_by = tomcat
 
 war_file
-   extends = tomcat_resource
+   type = tomcat_resource
    config
        path
    state_monitors
        java_servlet_http_monitor
 
 http_endpoint
-   extends = endpoint
+   type = endpoint
    config
         port = 80
         protocol = http
 
 https_endpoint
-    extends = endpoint
+    type = endpoint
     config
         port = 443
         protocol = https

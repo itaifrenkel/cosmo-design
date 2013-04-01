@@ -1,5 +1,5 @@
 petclinic
-    extends = java
+    type = java
     instances = 4
     war_files
         petclinic.war

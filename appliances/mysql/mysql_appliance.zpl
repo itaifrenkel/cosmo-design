@@ -1,5 +1,5 @@
 mysql_appliance
-    extends = puppet_appliance
+    type = puppet_appliance
     config
         virtual_machine = mysql_vm
         vm_resources
@@ -21,12 +21,12 @@ mysql_appliance
             file = start_as_slave.sh
 
 mysql_vm
-    extends = puppet_vm
+    type = puppet_vm
     config
         size = m1.large
 
 mysql
-    extends = vm_resource
+    type = vm_resource
     config
         puppet_template = "mysql.pp"
     state_monitors

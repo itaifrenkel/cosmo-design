@@ -1,2 +1,2 @@
 appliance
-    extends = resource
+    type = resource
