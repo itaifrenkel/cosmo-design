@@ -1,16 +1,7 @@
-java
-    config
-        number_of_web_appliances_per_availability_zone = 2
-        war_files
-            petclinic_war_file
+petclinic
+    extends = java
+    instances = 4
+    war_files
+        petclinic.war
 mysql
-    config
-        mysql_snapshot = petclinic_mysql_snapshot
-
-petclinic_war_file
-    extends = war_file
-    config
-        file = petclinic.war
-    wiring
-        consumes_endpoints
-            mysql
+    snapshot = petclinic_mysql_snapshot

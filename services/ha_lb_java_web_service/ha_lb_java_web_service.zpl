@@ -1,5 +1,4 @@
 ha_lb_java_web_service
-    alias = java
     config
         availability_zones
         number_of_web_appliances_per_zone = 2
