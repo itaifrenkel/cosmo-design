@@ -8,9 +8,9 @@ ha_lb_java_web_service
     services
         lb_java_web_service
 
-    bindings
+    endpoints
         lb_java_web_service
-            exposes_endpoints
+            exposes
                 http_endpoint
                 https_endpoint
 

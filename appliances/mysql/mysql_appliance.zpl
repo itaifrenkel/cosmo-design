@@ -5,8 +5,12 @@ mysql_appliance
         vm_resources
             cloudify_agent
             mysql
+
     endpoints
-       mysql_endpoint = mysql.mysql_endpoint
+        mysql
+            exposes
+                mysql_endpoint
+
     workflows
         start_appliance
         start_as_master

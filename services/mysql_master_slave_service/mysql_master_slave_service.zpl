@@ -9,11 +9,11 @@ mysql_master_slave_service
     appliances
         mysql_appliance
 
-    wiring
+    endpoints
         mysql_appliance
-            exposes_endpoints
+            exposes
                 mysql_endpoint
-            consumes_endpoints
+            consumes
                 mysql_appliance
                     mysql_endpoint
 

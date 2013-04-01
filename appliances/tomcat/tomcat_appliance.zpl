@@ -4,10 +4,9 @@ tomcat_appliance
         vm_resources
             cloudify_agent
             tomcat
-
-    bindings
+    endpoints
         tomcat
-            exposes_endpoints
+            exposes
                 http_endpoint
                 https_endpoint
    workflows

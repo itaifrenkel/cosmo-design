@@ -9,12 +9,12 @@ lb_java_web_service
         web_appliance = tomcat_appliance
         load_balancer_appliance = apache_lb_appliance
 
-    bindings
+    endpoints
         load_balancer_appliance
-            exposes_endpoints
+            exposes
                 http_endpoint
                 https_endpoint
-            consumes_endpoints
+            consumes
                 web_appliance
                     http_endpoint
                     https_endpoint

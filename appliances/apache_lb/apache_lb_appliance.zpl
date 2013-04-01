@@ -6,7 +6,7 @@ apache_lb_appliance
             cloudify_agent
             apache_lb
 
-    wiring
+    endpoints
         apache_lb
             exposes
                 http_endpoint
