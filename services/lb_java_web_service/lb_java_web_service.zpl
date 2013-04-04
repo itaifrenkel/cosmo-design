@@ -12,12 +12,14 @@ lb_java_web_service
     endpoints
         load_balancer_appliance
             exposes
-                http_endpoint
-                https_endpoint
-            consumes
-                web_appliance
+                endpoints
                     http_endpoint
                     https_endpoint
+            consumes
+                web_appliance
+                    endpoints
+                        http_endpoint
+                        https_endpoint
 
    workflows
        install_service

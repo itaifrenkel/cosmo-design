@@ -14,7 +14,8 @@ mysql_master_slave_service
                 mysql_endpoint
             consumes
                 mysql_appliance
-                    mysql_endpoint
+                    endpoints
+                        mysql_endpoint
 
     workflows
         install_service
