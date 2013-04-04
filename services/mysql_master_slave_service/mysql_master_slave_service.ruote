@@ -22,3 +22,20 @@ define _install_mysql_service
                                 attached_volume: ${attached_volume_zone2}
                 appliance exec: start_slave,
                           await: master_started
+
+define on_appliance_failed
+    sequence
+        given
+            that "${appliance.last_state} == slave"
+                recover_slave
+            that "${appliance.last_state} == master"
+                recover_master
+
+define recover_master
+    concurrence
+        sequence tag: master_started
+            appliance exec: change_from_slave_to_master
+        sequence
+            start_appliance availability_zone: ${appliance.availability_zone},
+                            attached_volume: ${appliance.attached_volume}
+            appliance exec: start_slave, :await master_started
