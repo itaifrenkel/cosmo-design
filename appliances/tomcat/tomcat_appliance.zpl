@@ -38,13 +38,13 @@ war_file
        java_servlet_http_monitor
 
 http_endpoint
-   type = endpoint
+   type = tcp_endpoint
    config
         port = 80
         protocol = http
 
 https_endpoint
-    type = endpoint
+    type = tcp_endpoint
     config
         port = 443
         protocol = https
