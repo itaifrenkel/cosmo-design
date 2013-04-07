@@ -28,6 +28,8 @@ mysql
     config
         puppet_template = "mysql.pp"
         chef_recipe = "mysql.rb"
+    endpoints
+        mysql_endpoint
     state_monitors
         mysql_server_monitor
 
