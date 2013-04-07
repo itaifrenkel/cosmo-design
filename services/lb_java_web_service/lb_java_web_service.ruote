@@ -1,13 +1,13 @@
 define install_service
     concurrency
        sequence tag: load_balancers_ready
-           concurrent_iterator times: ${number_of_load_balancer_appliances}
-               start_appliance appliance: ${f:load_balancer_appliance}
+           concurrent_iterator times: ${scale.load_balancer_instances}
+               start_appliance appliance: ${appliances.load_balancer_appliance}
 
-       concurrent_iterator times: ${f:number_of_web_appliances}
+       concurrent_iterator times: ${scale.web_instances}
            sequence
-               start_appliance appliance: ${web_appliance}
-               deploy_war_files_on_web_appliance
+               start_appliance appliance: ${appliances.web_appliance}
+               _deploy_war_files_on_web_appliance
                _add_web_appliance_to_load_balancers await: load_balancers_ready
 
 define scale_out
@@ -24,7 +24,7 @@ define scale_in
             get_appliances_planned_for_stop
             _break if: ${!appliances}
             set to_f: appliance, value: ${appliances.0}
-        gracefully_stop_web_appliance
+            gracefully_stop_web_appliance
 
 define on_appliance_failed
     sequence

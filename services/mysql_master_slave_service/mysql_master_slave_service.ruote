@@ -3,6 +3,7 @@ define install_service
 
 define _install_mysql_service
     sequence
+        get_availability_zones availability_zones:2
         set to_f: appliance, value: ${mysql_appliance}
         concurrent
             sequence tag: master_started
