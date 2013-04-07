@@ -1,6 +1,8 @@
 Cosmo semantics
 ===============
 
+[Diagram of a sample petclinic application](http://prezi.com/umc6y1rhco_i/present/?auth_key=f4maydp&follow=5xdtha9eofgw)
+
 resource
 --------
 A resource is the smallest defining element of a service. 
