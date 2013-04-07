@@ -1,0 +1,12 @@
+define start_appliance
+    _start_legacy_appliance
+
+define _start_legacy_appliance
+    sequence
+        _start_vm_appliance
+        install_script
+        start_script
+        repeat
+            start_detection
+            sleep 5s
+            _break if: ${started}
