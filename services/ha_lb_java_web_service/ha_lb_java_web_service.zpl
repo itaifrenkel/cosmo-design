@@ -1,9 +1,9 @@
 ha_lb_java_web_service
 
-    config
-        availability_zones
-        number_of_web_appliances_per_zone = 2
-        number_of_load_balancer_appliances_per_zone = 1
+    scale
+        availability_zones = 2
+        web_instances_per_zone = 2
+        load_balancer_instances_per_zone = 1
 
     services
         lb_java_web_service
