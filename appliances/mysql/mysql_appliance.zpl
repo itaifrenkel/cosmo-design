@@ -7,9 +7,7 @@ mysql_appliance
             mysql
 
     endpoints
-        mysql
-            exposes
-                mysql_endpoint
+        mysql_endpoint = mysql.mysql_endpoint
 
     workflows
         start_appliance
@@ -29,6 +27,12 @@ mysql
     type = vm_resource
     config
         puppet_template = "mysql.pp"
+        chef_recipe = "mysql.rb"
     state_monitors
         mysql_server_monitor
 
+mysql_endpoint
+    type = tcp_endpoint
+    config
+        port = 9184
+        protocol = "mysql specific"

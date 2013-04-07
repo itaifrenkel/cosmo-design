@@ -9,13 +9,7 @@ mysql_master_slave_service
         mysql_appliance
 
     endpoints
-        mysql_appliance
-            exposes
-                mysql_endpoint
-            consumes
-                mysql_appliance
-                    endpoints
-                        mysql_endpoint
+        mysql_endpoint = mysql_appliance.mysql_endpoint
 
     workflows
         install_service

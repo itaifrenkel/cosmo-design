@@ -7,10 +7,8 @@ apache_lb_appliance
             apache_lb
 
     endpoints
-        apache_lb
-            exposes
-                http_endpoint
-                https_endpoint
+        http_endpoint = apache_lb.http_endpoint
+        https_endpoint = apache_lb.https_endpoint
 
    workflows
        start_appliance

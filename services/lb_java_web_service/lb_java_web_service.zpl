@@ -10,16 +10,8 @@ lb_java_web_service
         load_balancer_appliance = apache_lb_appliance
 
     endpoints
-        load_balancer_appliance
-            exposes
-                endpoints
-                    http_endpoint
-                    https_endpoint
-            consumes
-                web_appliance
-                    endpoints
-                        http_endpoint
-                        https_endpoint
+        http_endpoint = load_balancer_appliance.http_endpoint
+        https_endpoint = load_balancer_appliance.https_endpoint
 
    workflows
        install_service

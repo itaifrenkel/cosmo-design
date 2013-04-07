@@ -1,4 +1,5 @@
 ha_lb_java_web_service
+
     config
         availability_zones
         number_of_web_appliances_per_zone = 2
@@ -8,10 +9,8 @@ ha_lb_java_web_service
         lb_java_web_service
 
     endpoints
-        lb_java_web_service
-            exposes
-                http_endpoint
-                https_endpoint
+        http_endpoint = lb_java_web_service.http_endpoint
+        https_endpoint = lb_java_web_service.https_endpoint
 
    workflows
        install_service
