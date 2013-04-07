@@ -1,0 +1,47 @@
+rule "mark web server as failed if load-balancer insists it is"
+dialect mvel
+when
+   WebAppliance($ip : ip, $port: port, state == 'reachable')
+   Number( intValue > 2 ) from accumulate(
+       $failures = LoadBalancerMonitor(
+                        webserver_ip == $ip,
+                        webserver_port == $port,
+                        status == "Not Responding")
+                   over window:time( 2m ),
+       count( $failures ) )
+
+then
+   modify($agent) {
+        state = 'unreachable'
+   }
+end
+
+rule "calculate web throughput based on total number of requests"
+when
+    WebAppliance($id :id, state == 'reachable')
+    $m1 : WebTotalRequestsMetric($id : id)
+    $m2 : WebTotalRequestsMetric(id == id, this after[28s,32s] $m1)
+then
+    m3 = new WebRequestsPerSecondMetric($id)
+    m3.timestamp = $m1.timestamp
+    m3.duration = $m1.timestamp - $m2.timestamp
+    m3.requests = $m2.totalRequests - $m1.totalRequests
+    m3.throughput = $m3.requests / $m3.duration
+    m3.id = $id
+    insert(m3)
+end
+
+rule "scale out if average throughput is above threshold"
+when
+    WebAppliance($id :id, $serviceId : serviceId, state == 'reachable')
+    AverageWebRequestsPerSecondThreshold( $max : max, serviceId == $serviceId)
+    Number( doubleValue > $max ) from accumulate(
+        WebRequestsPerSecondMetric( $throughput: $throughput )
+            over window:time( 5m ),
+        average( $throughput ) )
+    //TODO: Add cooldown period
+then
+    request = new ScaleOutRequest($serviceId)
+    insert(request)
+    exitPoint[ "event_bus" ].insert(request)
+end
