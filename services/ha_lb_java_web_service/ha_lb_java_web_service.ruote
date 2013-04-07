@@ -6,6 +6,6 @@ define install_service
 
 define deploy_war_files
     sequence
-        get_services service: ${lb_java_web_service}
+        list_aggregated_services service: ${lb_java_web_service}
         concurrent on: ${actual_services}, to_f: ${service}
             service exec: deploy_war_files
