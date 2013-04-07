@@ -2,10 +2,8 @@ petclinic_service
      type = java_service
      scale
          web_instances = 4
-
      war_modules
         petclinic_module
-
      network_wiring
          petclinic_depends_on_mysql
 
