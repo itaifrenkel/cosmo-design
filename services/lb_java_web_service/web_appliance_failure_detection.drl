@@ -1,0 +1,17 @@
+rule "mark web server as failed if load-balancer insists it is"
+dialect mvel
+when
+   WebAppliance($ip : ip, $port: port, state == 'reachable')
+   Number( intValue > 2 ) from accumulate(
+       $failures = LoadBalancerMonitor(
+                        webserver_ip == $ip,
+                        webserver_port == $port,
+                        status == "Not Responding")
+                   over window:time( 2m ),
+       count( $failures ) )
+
+then
+   modify($agent) {
+        state = 'unreachable'
+   }
+end
