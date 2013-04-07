@@ -7,8 +7,9 @@ define _start_vm_appliance
            concurrent_iterator mt:ignore, on: ${attached_volumes}, to_f: 'resource'
                create_volume
                _monitor_state
-           concurrent_iterator mt:ignore, on: ${security_groups}' :to_f => 'resource'
-               create_security_group
+
+           concurrent_iterator mt:ignore, on: ${endpoints}' :to_f => 'endpoint'
+               add_security_group_rule_for_endpoint
                _monitor_state
 
         iterator on: ${vm_resources}, to_f: ${resource}
