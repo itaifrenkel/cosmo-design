@@ -6,19 +6,24 @@ resource layer
     create_volume
     start_virtual_machine
     run_script_on_vm
-    configure_security_group_rule (based on endpoint wiring)
 
 appliance layer
 ---------------
+    list aggregated resources
     start appliance
     stop appliance
     run appliance workflow
-    list aggregated resources
+
 
 service layer
 -------------
-    get wiring information (ip address/port/etc...)
     list_aggregated_appliances
     list_aggregated_services
+    start service
+    stop service
     run service workflow
+
+    get wiring information (ip address/port/etc...)
+    configure_security_group_rule (based on endpoint wiring)
     on_appliance_failed
+    on_wiring_changed
