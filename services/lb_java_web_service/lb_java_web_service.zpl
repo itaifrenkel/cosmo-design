@@ -32,3 +32,5 @@ load_balancer_to_web_wiring
     to
         web_appliance.http_endpoint
         web_appliance.https_endpoint
+    policies
+        open_firewall
