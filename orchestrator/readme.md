@@ -1,12 +1,14 @@
 resource layer
 --------------
-    monitor_resource_state
-    unmonitor_resource_state
+    _start_monitoring_resource_state
+    _stop_monitoring_resource_state
+    await for state
+
     get_availability_zones
     create_volume
     start_virtual_machine
+
     run_script_on_vm
-    await for state (tomcat warmed up)
 
 appliance layer
 ---------------
@@ -17,7 +19,6 @@ appliance layer
 
 service layer
 -------------
-
     list_aggregated_appliances
     on_appliance_failed
 
