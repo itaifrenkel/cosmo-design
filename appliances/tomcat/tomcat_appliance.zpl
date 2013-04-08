@@ -4,8 +4,8 @@ tomcat_appliance
         cloudify_agent
         tomcat
     endpoints
-        http_endpoint
-        https_endpoint
+        http_endpoint = tomcat.http_endpoint
+        https_endpoint = tomcat.https_endpoint
    workflows
        start_appliance
        deploy_war
@@ -17,7 +17,7 @@ tomcat
     config
         puppet_template = tomcat.pp
         chef_recipe = tomcat
-    exposes_endpoints
+    endpoints
         http_endpoint
         https_endpoint
     state_monitors
