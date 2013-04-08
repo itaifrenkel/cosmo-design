@@ -1,14 +1,11 @@
 tomcat_appliance
     type = puppet_appliance
-    config
-        vm_resources
-            cloudify_agent
-            tomcat
-    endpoints
+    vm_resources
+        cloudify_agent
         tomcat
-            exposes
-                http_endpoint
-                https_endpoint
+    endpoints
+        http_endpoint
+        https_endpoint
    workflows
        start_appliance
        deploy_war
