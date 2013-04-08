@@ -7,8 +7,29 @@ define install_service
        concurrent_iterator times: ${scale.web_instances}
            sequence
                start_appliance appliance: ${appliances.web_appliance}
-               _deploy_war_files_on_web_appliance
+               _deploy_war_modules_on_web_appliance
                _add_web_appliance_to_load_balancers await: load_balancers_ready
+
+define deploy_war_modules
+    sequence
+        list_aggregated_appliances appliance ${web_appliance}
+        concurrent_iterator from: ${appliances} to_f: appliance
+            sequence
+                appliance exec: await_warmed_up
+                _deploy_war_modules_on_web_appliance
+
+define _deploy_war_modules_on_web_appliance
+    concurrent_iterator on: ${war_modules}, to_f: war_module, mt: ignore
+        sequence
+            list_network_wiring from: ${war_module  }
+            add_security_group_rule
+            _await_endpoints
+            appliance exec: deploy_war, war_module: ${war_module}
+
+define _await_endpoints
+    concurrent_iterator on: ${network_wiring}', to_f: 'w', mt: ignore
+                        if: ${w.policies.wait_for_single_endpoint_before_start}
+        await_state endpoint: ${w.endpoint}, state:'ready'
 
 define scale_out
     sequence
@@ -33,14 +54,6 @@ define on_appliance_failed
                 recover_load_balancer
             that "${appliance.type} == web_appliance"
                 recover_web_appliance
-
-define deploy_war_files
-    sequence
-        get_web_appliances
-        concurrent_iterator from: ${appliances} to_f: appliance
-            sequence
-                appliance exec: await_warmed_up
-                _deploy_war_files_on_web_appliance
 
 define _add_web_appliance_to_load_balancers
     sequence
@@ -92,18 +105,10 @@ define stop_web_appliance
 define _start_web_appliance
     sequence
         start_appliance
-        _deploy_war_files_on_web_appliance
+        _deploy_war_modules_on_web_appliance
         _add_web_appliance_to_load_balancers_gracefully
 
 end
-
-define _deploy_war_files_on_web_appliance
-    concurrent_iterator on: ${war_files}, to_f: war_file, mt: ignore
-        concurrent_iterator on: ${war_file.consumes}, to_f: endpoint, mt: ignore
-             await_endpoint
-             add_security_group_rule
-
-    appliance exec: deploy_war, war_file: ${f:war_file}
 
 
 define add_web_appliance_to_load_balancers_gracefully
