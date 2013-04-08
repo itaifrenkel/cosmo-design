@@ -1,9 +1,9 @@
-petclinic_service
+application_service
     type = java_service
-    scale
-        web_instances = 4
+    depends_on
+        database_service
 
 database_service
    type = mysql_service
    persistency
-       snapshot = petclinic_mysql_snapshot
+       snapshot_tag = petclinic_mysql_snapshot
