@@ -1,7 +1,7 @@
 mysql_master_slave_service
     type = service
     persistency
-        snapshot
+        snapshot_tag
         attached_volume_zone1
         attached_volume_zone2
 
