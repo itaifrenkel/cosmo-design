@@ -6,6 +6,7 @@ resource layer
     create_volume
     start_virtual_machine
     run_script_on_vm
+    await for state (tomcat warmed up)
 
 appliance layer
 ---------------
@@ -14,16 +15,24 @@ appliance layer
     stop appliance
     run appliance workflow
 
-
 service layer
 -------------
+
     list_aggregated_appliances
+    on_appliance_failed
+
     list_aggregated_services
+    on_service_failed
+
     start service
     stop service
     run service workflow
 
-    get wiring information (ip address/port/etc...)
+    update_scale_plan
+    get_appliances_planned_for_start
+    get_appliances_planned_for_stop
+
+
+    list_network_wiring (from/to/policy/ip address/port/etc...)
     configure_security_group_rule (based on endpoint wiring)
-    on_appliance_failed
     on_wiring_changed
