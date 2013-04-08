@@ -12,24 +12,25 @@ define install_service
 
 define deploy_war_modules
     sequence
-        list_aggregated_appliances appliance ${web_appliance}
+        list_aggregated_appliances appliance: ${web_appliance}
         concurrent_iterator from: ${appliances} to_f: appliance
             sequence
-                appliance exec: await_warmed_up
+                appliance exec: wait_for_state, state: 'ready'
                 _deploy_war_modules_on_web_appliance
 
 define _deploy_war_modules_on_web_appliance
     concurrent_iterator on: ${war_modules}, to_f: war_module, mt: ignore
         sequence
-            list_network_wiring from: ${war_module  }
-            add_security_group_rule
-            _await_endpoints
+            list_network_wiring from: ${war_module}
+            concurrent_iterator on: ${network_wiring}, to_f: w, mt: ignore
+                sequence
+                    add_security_group_rule, if: ${w.policies.open_firewall}
+                    _await_endpoints, if: ${w.policies.wait_for_single_endpoint_before_start}
             appliance exec: deploy_war, war_module: ${war_module}
 
 define _await_endpoints
     concurrent_iterator on: ${network_wiring}', to_f: 'w', mt: ignore
-                        if: ${w.policies.wait_for_single_endpoint_before_start}
-        await_state endpoint: ${w.endpoint}, state:'ready'
+        endpoint exec: wait_for_state, endpoint: ${w.endpoint}, state:'ready'
 
 define scale_out
     sequence
