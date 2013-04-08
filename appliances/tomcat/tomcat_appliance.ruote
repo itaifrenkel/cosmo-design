@@ -1,9 +1,9 @@
 # deploys a war file on tomcat
 # input
-#     resource - war_file to deploy
-define deploy_war_file
+#     resource - war module to deploy
+define deploy_war_module
     sequence
-        run_script_on_vm script: deploy_war, args: ${resource.config}
+        run_script_on_vm script: deploy_war, args: ${resource}
         _monitor_state
 
 # undeploys a war file from tomcat
