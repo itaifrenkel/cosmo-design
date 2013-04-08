@@ -5,8 +5,8 @@ Cosmo semantics
 
 Resource
 --------
-A resource is the smallest defining element of a service. 
-A resource state can be monitored (availability), metered(usage) and associated with a tenant (user quota/ permissions).
+A resource is the smallest building block that can be monitored for state (availability),
+metered(usage) and associated with a tenant (user quota/ permissions).
 
 Two resources could have a hosted_by relationship, for better correlation of availability monitoring.
 
@@ -22,8 +22,9 @@ Other resources include:
 
 Appliance
 ---------
-Appliance is a single standalone unit of a service.
-Usually formed by an aggregation of resources that include one virtual machine and one agent running on that vm.
+An appliance is a standalone usable "deployed software" that can be consumed and managed via the network.
+An appliance is usually formed by an aggregation of resources that include one virtual machine and one agent running
+on that vm.
 When the lifecycle of the appliance ends (terminates), some resources may still be allocated (such as elastic ip,
 EBS snapshot, etc...)
 
@@ -37,14 +38,13 @@ Service
 A service could be defined as an aggregation of appliances, their wiring, ability to recover from failures,
 and scale policy.
 
-Example for a Service:
-- A tomcat service that aggregates a load balancer appliance with tomcat appliances and define the failover recovery
+Example for a Service aggregating appliances:
+- A tomcat service that aggregates a load balancer appliance with tomcat appliances and defines failover recovery
 and scale workflows.
+- Two mysql appliances and workflows that implement master/slave mode.
 
 A service could also aggregate other services:
-
 - An aggregation of two tomcat services, one in each availability zone that compose one HA tomcat service.
-- Two mysql appliances and workflows that implement master/slave mode.
 
 A service could be defined by 3rd party APIs:
 - Amazon Elastic Load Balancer
@@ -54,8 +54,7 @@ Application
 An aggregation of services, one of which is exposed to the end-user.
 
 For example, the petclinic application is an aggregation of a H/A load balanced tomcat service running petclinic.war
-and mysql service
-persisting the data.
+and mysql service persisting the data.
 
 Network Endpoints and Wiring
 ----------------------------
