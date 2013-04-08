@@ -1,7 +1,7 @@
 Cosmo semantics
 ===============
 
-[Diagram of a sample petclinic application](http://prezi.com/umc6y1rhco_i/present/?auth_key=f4maydp&follow=5xdtha9eofgw)
+[Diagram of a sample petclinic application](http://prezi.com/umc6y1rhco_i/cosmo-semantics/?kw=view-umc6y1rhco_i&rc=ref-37008791)
 
 resource
 --------
