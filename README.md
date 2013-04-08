@@ -3,7 +3,7 @@ Cosmo semantics
 
 [Diagram of a sample petclinic application](http://prezi.com/umc6y1rhco_i/cosmo-semantics/?kw=view-umc6y1rhco_i&rc=ref-37008791)
 
-resource
+Resource
 --------
 A resource is the smallest defining element of a service. 
 A resource state can be monitored (availability), metered(usage) and associated with a tenant (user quota/ permissions).
@@ -16,34 +16,55 @@ Examples for Resources:
 - virtual machine (is hosted by)
 - availability zone.
 
+Other resources include:
+- Amazon Elastic IP
+- Amazon volume snapshot
+
 Appliance
 ---------
-An aggregation of resources that form a standalone unit of a service.
+Appliance is a single standalone unit of a service.
+Usually formed by an aggregation of resources that include one virtual machine and one agent running on that vm.
+When the lifecycle of the appliance ends (terminates), some resources may still be allocated (such as elastic ip,
+EBS snapshot, etc...)
 
--A mysql appliance is aggregation of virtual machine, mysql process, attached volume.
--A load balancer appliance is aggregation of virtual machine, apache process, elastic ip.
+Examples of an appliance:
+- A mysql appliance is aggregation of virtual machine, mysql process, attached volume, agent.
+- A load balancer appliance is aggregation of virtual machine, apache process, elastic ip, agent.
+- Amazon RDS DB Instance
 
 Service
 -------
-A network endpoint with an API which can scale and recover from failures. 
-A service could be defined as an aggregation of appliances, aggregation of services, or via 3rd party APIs.
+A service could be defined as an aggregation of appliances, their wiring, ability to recover from failures,
+and scale policy.
 
 Example for a Service:
-- A tomcat service that aggregates a load balancer appliance with tomcat appliances and define the failover recover and scale workflows.
-- An aggregation of two tomcat services, one in each availability zone.
+- A tomcat service that aggregates a load balancer appliance with tomcat appliances and define the failover recovery
+and scale workflows.
+
+A service could also aggregate other services:
+
+- An aggregation of two tomcat services, one in each availability zone that compose one HA tomcat service.
 - Two mysql appliances and workflows that implement master/slave mode.
+
+A service could be defined by 3rd party APIs:
 - Amazon Elastic Load Balancer
 
 Application
 ------------
 An aggregation of services, one of which is exposed to the end-user.
 
+For example, the petclinic application is an aggregation of a H/A load balanced tomcat service running petclinic.war
+and mysql service
+persisting the data.
+
 Network Endpoints and Wiring
 ----------------------------
-Each resource/appliance/service can define a network endpoint (which roughly represents a listening tcp server). 
-When the tomcat resource exposes an http endpoint, it can be wired to other resources in the same appliance that tomcat is part of. 
-In order for other appliances (such as the load balancer) to consume the endpoint:
-- The tomcat appliance must expose the tomcat endpoint explicitly. 
+Each resource/appliance/service can expose a network endpoint (which roughly represents a listening tcp server).
+For example, the tomcat resource exposes an http endpoint.
+
+This endpoint by default could only be accessed from other resources in the same appliance that tomcat is part of.
+In order for other appliances (such as the load balancer) to consume the tomcat endpoint:
+- The tomcat appliance must expose the tomcat endpoint explicitly.
 - The service comprising of the tomcat and load balancer appliance needs to wire them together
 
 
