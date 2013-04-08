@@ -3,6 +3,7 @@ legacy_appliance
     config
         install_script
         start_script
+        start_detection_script
         stop_script
     workflows
         start_appliance

@@ -4,9 +4,9 @@ define start_appliance
 define _start_legacy_appliance
     sequence
         _start_vm_appliance
-        install_script
-        start_script
+        run_script_on_vm script: ${install_script}
+        run_script_on_vm script: ${start_script}
         repeat
-            start_detection
+            run_script_on_vm script: ${start_detection_script}
             sleep 5s
             _break if: ${started}
