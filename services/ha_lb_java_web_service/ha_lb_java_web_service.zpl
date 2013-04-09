@@ -14,4 +14,4 @@ ha_lb_java_web_service
 
    workflows
        install_service
-       deploy_war_files
+       deploy_war_module

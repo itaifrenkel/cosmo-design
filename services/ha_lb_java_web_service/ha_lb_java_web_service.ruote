@@ -1,11 +1,15 @@
+# Installs lb_java_web_services on different availability zones
 define install_service
     sequence
-        get_availability_zones
-        concurrent on: ${actual_availability_zones}, to_f: ${availability_zone}
-            install_service service: ${lb_java_web_service}
+        service exec:list_aggregated_availability_zones
+        concurrent on: ${availability_zones}, to_f: ${availability_zone}
+            service exec:install_service, service: ${lb_java_web_service}
 
-define deploy_war_files
+# deploys a new war module on all availability zones
+# input
+#    war_module
+define deploy_war_module
     sequence
-        list_aggregated_services service: ${lb_java_web_service}
-        concurrent on: ${actual_services}, to_f: ${service}
-            service exec: deploy_war_files
+        service exec: list_aggregated_services, by_type:lb_java_web_service
+        concurrent on: ${services}, to_f: ${service}
+            service exec: deploy_war_module
