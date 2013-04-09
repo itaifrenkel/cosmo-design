@@ -2,7 +2,7 @@ resource layer
 --------------
     _start_monitoring_resource_state
     _stop_monitoring_resource_state
-    await for state
+    wait_for_state
 
     get_availability_zones
     create_volume
@@ -12,10 +12,13 @@ resource layer
 
 appliance layer
 ---------------
-    list aggregated resources
     start appliance
     stop appliance
-    run appliance workflow
+    wait_for_state
+    run_workflow
+
+    list aggregated resources
+    add_aggregated_resource
 
 service layer
 -------------
@@ -35,5 +38,6 @@ service layer
 
 
     list_network_wiring (from/to/policy/ip address/port/etc...)
-    configure_security_group_rule (based on endpoint wiring)
+    open_firewall
+    wait_for_single_endpoint
     on_wiring_changed
