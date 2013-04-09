@@ -44,27 +44,27 @@ define on_appliance_failed
     sequence
         given
             that "${appliance.type} == load_balancer"
-                recover_load_balancer
+                _recover_load_balancer
             that "${appliance.type} == web_appliance"
-                recover_web_appliance
+                _recover_web_appliance
 
 # updates planned number of instances and starts new web appliances
 define scale_out
     sequence
-        update_scale_plan
-        get_appliances_planned_for_start
+        service exec:update_scale_plan
+        service exec:get_appliances_planned_for_start
         concurrent_iterator from: ${appliances} to_f: appliance
-            start_web_appliance
+            _start_web_appliance
 
 #updates planned number of instances and stops web appliances
 define scale_in
     sequence
-        update_scale_plan
+        service exec:update_scale_plan
         repeat
-            get_appliances_planned_for_stop
+            service exec:get_appliances_planned_for_stop
             _break if: ${!appliances}
             set to_f: appliance, value: ${appliances.0}
-            gracefully_stop_web_appliance
+            stop_web_appliance_gracefully
 
 # adds the specified web appliance to all load balancers
 # input
@@ -72,7 +72,7 @@ define scale_in
 define _add_web_appliance_to_load_balancers
     sequence
         set to_f: web_appliance, value: ${appliance}
-        get_load_balancer_appliances
+        service exec: get_load_balancer_appliances
         concurrent_iterator from: ${appliances}, to_f: appliance
             appliance exec: add_web_server
 
@@ -87,10 +87,10 @@ define _remove_web_appliance_from_load_balancers
             appliance exec: remove_web_server
 
 
-define recover_web_appliance
+define _recover_web_appliance
     _restart_web_server_process timeout: 10s,
-                                on_timeout: restart_web_appliance,
-                                on_error:   restart_web_appliance
+                                on_timeout: _restart_web_appliance,
+                                on_error:   _restart_web_appliance
 
 define _replace_web_appliance
     concurrence
@@ -102,19 +102,19 @@ define _terminate_web_appliance
         _stop_web_appliance
         _terminate_appliance
 
-define restart_web_server_process
+define _restart_web_server_process
     sequence
         _remove_web_appliance_from_load_balancers
         appliance exec: restart_web_server
         _add_web_appliance_to_load_balancers_gracefully
 
-define stop_web_appliance_gracefully
+define _stop_web_appliance_gracefully
     sequence
         _add_web_appliance_to_load_balancers drain: true
         sleep '60s' if: ${draining}
         stop_web_appliance
 
-define stop_web_appliance
+define _stop_web_appliance
     sequence
         remove_web_server_from_load_balancers
         stop_appliance
