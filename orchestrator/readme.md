@@ -36,8 +36,9 @@ service layer
     get_appliances_planned_for_start
     get_appliances_planned_for_stop
 
-
     list_network_wiring (from/to/policy/ip address/port/etc...)
     open_firewall
     wait_for_single_endpoint
     on_wiring_changed
+
+    list_aggregated_availability_zones
