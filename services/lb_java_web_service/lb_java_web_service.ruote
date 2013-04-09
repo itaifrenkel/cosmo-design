@@ -1,52 +1,44 @@
+# starts load balancer and web appliances, deploys war modules
 define install_service
     concurrency
-       sequence tag: load_balancers_ready
-           concurrent_iterator times: ${scale.load_balancer_instances}
-               start_appliance appliance: ${appliances.load_balancer_appliance}
+       concurrent_iterator times: ${scale.load_balancer_instances}, tag: load_balancers_ready
+           appliance exec: start_appliance, appliance: ${appliances.load_balancer_appliance}
 
        concurrent_iterator times: ${scale.web_instances}
            sequence
-               start_appliance appliance: ${appliances.web_appliance}
+               appliance exec: start_appliance, appliance: ${appliances.web_appliance}
                _deploy_war_modules_on_web_appliance
                _add_web_appliance_to_load_balancers await: load_balancers_ready
 
-define deploy_war_modules
+# adds the specified war_module to the list of war modules
+# deploys the new war_module on all web appliances.
+# input
+#    war_module - the new war module to deploy
+define deploy_war_module
     sequence
-        list_aggregated_appliances appliance: ${web_appliance}
-        concurrent_iterator from: ${appliances} to_f: appliance
+        service exec: add_aggregated_resource, resources: war_modules, value: ${war_module}
+        service exec: list_aggregated_appliances, appliance: ${web_appliance}
+        concurrent_iterator from: ${appliances}, to_f: appliance, mt: ignore
             sequence
                 appliance exec: wait_for_state, state: 'ready'
+                appliance exec: add_aggregated_resource, resources: war_modules, value: ${war_module}
+                appliance exec: list_aggregated_resources, resources: war_modules, state: not_deployed
                 _deploy_war_modules_on_web_appliance
 
+# deploys war_modules on the appliance
+# enforces open_firewall, wait_for_single_endpoint policies
+# input
+#   appliance
+#   war_modules
 define _deploy_war_modules_on_web_appliance
     concurrent_iterator on: ${war_modules}, to_f: war_module, mt: ignore
         sequence
-            list_network_wiring from: ${war_module}
+            service exec: list_network_wiring, from: ${war_module}
             concurrent_iterator on: ${network_wiring}, to_f: w, mt: ignore
                 sequence
-                    add_security_group_rule, if: ${w.policies.open_firewall}
-                    _await_endpoints, if: ${w.policies.wait_for_single_endpoint_before_start}
+                    service exec:open_firewall, if: ${w.policies.open_firewall}
+                    service exec:wait_for_single_endpoint, if: ${w.policies.wait_for_single_endpoint_before_start}
             appliance exec: deploy_war, war_module: ${war_module}
-
-define _await_endpoints
-    concurrent_iterator on: ${network_wiring}', to_f: 'w', mt: ignore
-        endpoint exec: wait_for_state, endpoint: ${w.endpoint}, state:'ready'
-
-define scale_out
-    sequence
-        update_plan
-        get_appliances_planned_for_start
-        concurrent_iterator from: ${appliances} to_f: appliance
-            start_web_appliance
-
-define scale_in
-    sequence
-        update_plan
-        repeat
-            get_appliances_planned_for_stop
-            _break if: ${!appliances}
-            set to_f: appliance, value: ${appliances.0}
-            gracefully_stop_web_appliance
 
 define on_appliance_failed
     sequence
@@ -56,6 +48,27 @@ define on_appliance_failed
             that "${appliance.type} == web_appliance"
                 recover_web_appliance
 
+# updates planned number of instances and starts new web appliances
+define scale_out
+    sequence
+        update_scale_plan
+        get_appliances_planned_for_start
+        concurrent_iterator from: ${appliances} to_f: appliance
+            start_web_appliance
+
+#updates planned number of instances and stops web appliances
+define scale_in
+    sequence
+        update_scale_plan
+        repeat
+            get_appliances_planned_for_stop
+            _break if: ${!appliances}
+            set to_f: appliance, value: ${appliances.0}
+            gracefully_stop_web_appliance
+
+# adds the specified web appliance to all load balancers
+# input
+#     appliance - the web appliance to add
 define _add_web_appliance_to_load_balancers
     sequence
         set to_f: web_appliance, value: ${appliance}
@@ -63,6 +76,9 @@ define _add_web_appliance_to_load_balancers
         concurrent_iterator from: ${appliances}, to_f: appliance
             appliance exec: add_web_server
 
+# removes the specified web appliance from all load balancers
+# input
+#     appliance - the web appliance to remove
 define _remove_web_appliance_from_load_balancers
     sequence
         set to_f: web_appliance, value: ${appliance}
@@ -71,7 +87,7 @@ define _remove_web_appliance_from_load_balancers
             appliance exec: remove_web_server
 
 
-define _recover_web_appliance
+define recover_web_appliance
     _restart_web_server_process timeout: 10s,
                                 on_timeout: restart_web_appliance,
                                 on_error:   restart_web_appliance

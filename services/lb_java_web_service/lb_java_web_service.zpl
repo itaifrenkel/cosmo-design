@@ -20,7 +20,7 @@ lb_java_web_service
 
    workflows
        install_service
-       deploy_war_files
+       deploy_war_module
        scale_out
        scale_in
        on_appliance_failed
