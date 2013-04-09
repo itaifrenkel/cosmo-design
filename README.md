@@ -8,17 +8,19 @@ Resource
 A resource is the smallest building block that can be monitored for state (availability),
 metered(usage) and associated with a tenant (user quota/ permissions).
 
-Two resources could have a hosted_by relationship, for better correlation of availability monitoring.
-
 Examples for Resources:
-- java servlet (is hosted by)
-- tomcat (is hosted by) 
-- virtual machine (is hosted by)
-- availability zone.
-
-Other resources include:
+- java servlet
+- tomcat (process)
+- virtual machine
+- availability zone
 - Amazon Elastic IP
-- Amazon volume snapshot
+- Amazon EBS volume
+- Amazon snapshot
+
+Two resources could have a hosted_by relationship, for better correlation of availability monitoring.
+java_servlet is hosted by a tomcat process which is hosted in a virtual machine which is hosted in an availability
+zone
+
 
 Appliance
 ---------
