@@ -1,10 +1,9 @@
 mysql_appliance
     type = puppet_appliance
-    config
-        virtual_machine = mysql_vm
-        vm_resources
-            cloudify_agent
-            mysql
+    virtual_machine = mysql_vm
+    vm_resources
+        cloudify_agent
+        mysql
 
     endpoints
         mysql_endpoint = mysql.mysql_endpoint
