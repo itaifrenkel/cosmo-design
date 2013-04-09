@@ -1,7 +1,7 @@
 rule "mark web server as failed if load-balancer insists it is"
 dialect mvel
 when
-   WebAppliance($ip : ip, $port: port, state == 'reachable')
+   $appliance : WebAppliance($ip : ip, $port: port, state == 'reachable')
    Number( intValue > 2 ) from accumulate(
        $failures = LoadBalancerMonitor(
                         webserver_ip == $ip,
@@ -9,9 +9,13 @@ when
                         status == "Not Responding")
                    over window:time( 2m ),
        count( $failures ) )
+   not OnApplianceFailed(appliance == $appliance)
 
 then
-   modify($agent) {
+   modify($appliance) {
         state = 'unreachable'
    }
+   request = new OnApplianceFailed($appliance)
+   insert(request)
+   exitPoint[ "event_bus" ].insert(request)
 end

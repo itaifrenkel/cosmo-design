@@ -15,12 +15,13 @@ end
 
 rule "scale out if average throughput is above threshold"
 when
-    WebAppliance($id :id, $serviceId : serviceId, state == 'reachable')
     AverageWebRequestsPerSecondThreshold( $max : max, serviceId == $serviceId)
     Number( doubleValue > $max ) from accumulate(
-        WebRequestsPerSecondMetric( $throughput: $throughput )
+        WebAppliance($id :id, $serviceId : serviceId, state == 'reachable')
+        WebRequestsPerSecondMetric( $throughput: $throughput, id == $id )
             over window:time( 5m ),
         average( $throughput ) )
+    not ScaleOutRequest(serviceId == $serviceId)
     //TODO: Add cooldown period
 then
     request = new ScaleOutRequest($serviceId)
